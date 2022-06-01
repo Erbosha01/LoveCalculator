@@ -10,7 +10,7 @@ import com.geektech.lovecalculator.network.RetrofitService;
 
 public class App extends Application {
     public static LoveApi api;
-    public static NavController navController;
+
     @Override
     public void onCreate() {
         RetrofitService retrofitService = new RetrofitService();
