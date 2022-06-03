@@ -63,30 +63,19 @@ public class MainFragment extends Fragment {
         String secondName = binding.etNameTwo.getText().toString();
         mainViewModel.getLoveModelLiveData(firstName, secondName).observe(this, LoveModel -> {
             Log.e("TAG", "getDataFromLoveApi: " + LoveModel.getPercentage());
+            if (LoveModel != null) {
+                    Bundle bundle = new Bundle();
+                    String oneName = LoveModel.getFirstName();
+                    String twodName = LoveModel.getSecondName();
+                    String percentage = LoveModel.getPercentage();
+                    String result = LoveModel.getResult();
+                    bundle.putString(BUNDLE_KEY_ONE, oneName);
+                    bundle.putString(BUNDLE_KEY_TWO, twodName);
+                    bundle.putString(BUNDLE_KEY_THREE, percentage);
+                    bundle.putString(BUNDLE_KEY_FOUR, result);
+                    NavController navController = Navigation.findNavController(requireActivity(), R.id.nav_host_fragment);
+                    navController.navigate(R.id.action_mainFragment_to_resultFragment, bundle);
+                }
         });
-//        App.api.loveCalculate(firstName, secondName, HOST, KEY).enqueue(new Callback<LoveModel>() {
-//            @Override
-//            public void onResponse(Call<LoveModel> call, Response<LoveModel> response) {
-//                if (response.isSuccessful()) {
-//                    Log.e("TAG", "onResponse: " + response.body());
-//                    Bundle bundle = new Bundle();
-//                    String firsName = response.body().getFirstName();
-//                    String secondName = response.body().getSecondName();
-//                    String percentage = response.body().getPercentage();
-//                    String result = response.body().getResult();
-//                    bundle.putString(BUNDLE_KEY_ONE, firsName);
-//                    bundle.putString(BUNDLE_KEY_TWO, secondName);
-//                    bundle.putString(BUNDLE_KEY_THREE, percentage);
-//                    bundle.putString(BUNDLE_KEY_FOUR, result);
-//                    NavController navController = Navigation.findNavController(requireActivity(), R.id.nav_host_fragment);
-//                    navController.navigate(R.id.action_mainFragment_to_resultFragment, bundle);
-//                }
-//            }
-//
-//            @Override
-//            public void onFailure(Call<LoveModel> call, Throwable t) {
-//                Log.e("TAG", "onFailure: " + t.getLocalizedMessage());
-//            }
-//        });
     }
 }
