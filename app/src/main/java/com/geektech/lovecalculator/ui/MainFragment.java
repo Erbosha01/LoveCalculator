@@ -1,5 +1,6 @@
 package com.geektech.lovecalculator.ui;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -7,30 +8,28 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
-import androidx.navigation.NavHostController;
 import androidx.navigation.Navigation;
 
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
-import com.geektech.lovecalculator.App;
 import com.geektech.lovecalculator.R;
 import com.geektech.lovecalculator.databinding.FragmentMainBinding;
-import com.geektech.lovecalculator.network.LoveModel;
 import com.geektech.lovecalculator.viewmodel.MainViewModel;
 
-import javax.security.auth.login.LoginException;
+import javax.inject.Inject;
 
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
+import dagger.hilt.android.AndroidEntryPoint;
 
+@AndroidEntryPoint
 public class MainFragment extends Fragment {
     private FragmentMainBinding binding;
     private MainViewModel mainViewModel;
+    @Inject
+    SharedPreferences preferences;
+
     public final static String BUNDLE_KEY_ONE = "fname";
     public final static String BUNDLE_KEY_TWO = "sname";
     public final static String BUNDLE_KEY_THREE = "percentage";
@@ -46,6 +45,13 @@ public class MainFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        preferences.getBoolean("isShown", false);
+        boolean prefs = preferences.getBoolean("isShown", false);
+        if (!prefs) {
+            NavController navController = Navigation.findNavController(requireActivity(), R.id.nav_host_fragment);
+            navController.navigate(R.id.boardFragment);
+        }
+
         initClickListener();
     }
 
@@ -64,18 +70,18 @@ public class MainFragment extends Fragment {
         mainViewModel.getLoveModelLiveData(firstName, secondName).observe(this, LoveModel -> {
             Log.e("TAG", "getDataFromLoveApi: " + LoveModel.getPercentage());
             if (LoveModel != null) {
-                    Bundle bundle = new Bundle();
-                    String oneName = LoveModel.getFirstName();
-                    String twodName = LoveModel.getSecondName();
-                    String percentage = LoveModel.getPercentage();
-                    String result = LoveModel.getResult();
-                    bundle.putString(BUNDLE_KEY_ONE, oneName);
-                    bundle.putString(BUNDLE_KEY_TWO, twodName);
-                    bundle.putString(BUNDLE_KEY_THREE, percentage);
-                    bundle.putString(BUNDLE_KEY_FOUR, result);
-                    NavController navController = Navigation.findNavController(requireActivity(), R.id.nav_host_fragment);
-                    navController.navigate(R.id.action_mainFragment_to_resultFragment, bundle);
-                }
+                Bundle bundle = new Bundle();
+                String oneName = LoveModel.getFirstName();
+                String twodName = LoveModel.getSecondName();
+                String percentage = LoveModel.getPercentage();
+                String result = LoveModel.getResult();
+                bundle.putString(BUNDLE_KEY_ONE, oneName);
+                bundle.putString(BUNDLE_KEY_TWO, twodName);
+                bundle.putString(BUNDLE_KEY_THREE, percentage);
+                bundle.putString(BUNDLE_KEY_FOUR, result);
+                NavController navController = Navigation.findNavController(requireActivity(), R.id.nav_host_fragment);
+                navController.navigate(R.id.action_mainFragment_to_resultFragment, bundle);
+            }
         });
     }
 }

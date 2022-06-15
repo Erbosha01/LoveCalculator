@@ -36,7 +36,7 @@ public class ResultFragment extends Fragment {
         binding.btnTry.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                NavController navController = Navigation.findNavController(requireActivity(),R.id.nav_host_fragment);
+                NavController navController = Navigation.findNavController(requireActivity(), R.id.nav_host_fragment);
                 navController.navigate(R.id.action_resultFragment_to_mainFragment);
             }
         });

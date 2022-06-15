@@ -6,9 +6,19 @@ import androidx.lifecycle.ViewModel;
 import com.geektech.lovecalculator.network.LoveModel;
 import com.geektech.lovecalculator.repository.Repository;
 
-public class MainViewModel extends ViewModel {
+import javax.inject.Inject;
 
-    Repository repository = new Repository();
+import dagger.hilt.android.lifecycle.HiltViewModel;
+
+@HiltViewModel
+public class MainViewModel extends ViewModel {
+    Repository repository;
+
+    @Inject
+    public MainViewModel(Repository repository) {
+        this.repository = repository;
+    }
+
     public LiveData<LoveModel> getLoveModelLiveData(String firstName, String secondName) {
         return repository.getData(firstName, secondName);
     }
